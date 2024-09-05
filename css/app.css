@@ -728,9 +728,6 @@ body {
         justify-content: center;
         gap: 60px;
     }
-}
-
-@media (max-width:500px) {
     .header__logo{
         flex-direction: column;
     }
@@ -762,4 +759,7 @@ body {
     .pizza-block__image {
         width: 200px;
     }
+}
+
+@media (max-width:500px) {
 }
