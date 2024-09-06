@@ -92,7 +92,7 @@ a {
 .header__logo h1 {
     color: #181818;
     font-size: 24px;
-    letter-spacing: 1%;
+    letter-spacing: 1px;
     text-transform: uppercase;
     font-weight: 800;
 }
@@ -237,7 +237,6 @@ a {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    flex-wrap: wrap;
     
 }
 .categories ul li {
@@ -267,6 +266,7 @@ a {
 }
 .sort {
     position: relative;
+    min-width: 250px;
 }
 .sort.active .sort__popup{
     width: 160px;
@@ -336,7 +336,7 @@ a {
 .pizza-block__title {
     font-size: 20px;
     font-weight: 900;
-    letter-spacing: 1%;
+    letter-spacing: 1px;
 }
 .pizza-block__selector {
     display: -webkit-box;
@@ -428,17 +428,24 @@ body {
     -ms-flex-pack: justify;
     justify-content: space-between;
 }
+.categories {
+    flex: 1 1 0%;
+    overflow: scroll;
+}
+.categories::-webkit-scrollbar {
+    display: none;
+}
 .content__top {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    flex-wrap: wrap;
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
+    gap: 24px;
 }
 .container {
     width: 90%;
@@ -724,9 +731,11 @@ body {
 }
 
 @media (max-width:750px){
+    .wrapper {
+        width: 88%;
+    }
     .content__items{
         justify-content: center;
-        gap: 60px;
     }
     .header__logo{
         flex-direction: column;
@@ -734,13 +743,17 @@ body {
     .container{
         flex-direction: column;
         gap: 30px;
+        display: flex;
+    }
+    .content__items {
+        row-gap: 20px;
     }
     .content__top{
         justify-content: center;
+        flex-direction: column;
     }
     .categories ul {
         justify-content: center;
-        flex-direction: column;
         align-items: center;
     }
     .sort__label{
@@ -751,10 +764,13 @@ body {
         text-align: center;
     }
     .pizza-block{
-        width: 300px;
+        width: 50%;
     }
     .pizza-block__bottom{
         justify-content: center;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 16px;
     }
     .pizza-block__image {
         width: 200px;
