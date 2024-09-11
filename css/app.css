@@ -758,6 +758,9 @@ body {
         justify-content: center;
         flex-direction: column;
     }
+    .content__top ul {
+        display: inline-flex;
+    }
     .categories {
         width: 100%;
     }
