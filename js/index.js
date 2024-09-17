@@ -100,7 +100,7 @@ const pizzas = [
     category: "Роллы",
   },
   {
-    id: 10,
+    id: 11,
     name: "Липтон",
     price: 120,
     imgUrl:
@@ -111,13 +111,7 @@ const pizzas = [
 ];
 const routeToCart = document.querySelector(".button.button--cart");
 const content = document.querySelector(".content");
-const categoriesArray = [
-  "Все",
-  "Напитки",
-  "Роллы",
-  "Суши",
-  "Сет",
-];
+const categoriesArray = ["Все", "Напитки", "Роллы", "Суши", "Сет"];
 
 const localItems = JSON.parse(localStorage.getItem("cartPizzas"));
 let cartPizzas = localItems ? localItems : [];
@@ -148,6 +142,7 @@ const goMain = (btn) => {
     e.preventDefault();
     headerCart.style.display = "block";
     renderMain();
+  renderPrices();
   });
 };
 
@@ -240,10 +235,10 @@ const renderCatalog = (array) => {
   });
 
   gsap.from(".pizza-block", {
-    opacity: 0, 
-    y: 100, 
+    opacity: 0,
+    y: 100,
     duration: 1,
-    stagger: 0.2
+    stagger: 0.2,
   });
 };
 
@@ -376,7 +371,7 @@ const clearCart = () => {
       </div>
     </div>
   `;
-
+  cartPizzas.length = 0
   const goToMainBtn = document.querySelector(".button.button--black");
   goMain(goToMainBtn);
 };
@@ -476,7 +471,9 @@ const renderCart = () => {
       });
 
       deletePizzaBtn.addEventListener("click", () => {
-        cartPizzas = cartPizzas.filter((pizza) => pizza.id !== minusBtn.dataset.id)
+        cartPizzas = cartPizzas.filter(
+          (pizza) => pizza.id !== minusBtn.dataset.id
+        );
         renderCart();
       });
     });
@@ -490,18 +487,18 @@ routeToCart.addEventListener("click", async (e) => {
 
   await tl.to(".content", {
     scale: 0.9,
-    duration: 1
-  })
+    duration: 1,
+  });
 
   await tl.to(".content", {
     x: "-100vw",
-    duration: 1
-  })
+    duration: 1,
+  });
 
   await tl.to(".content", {
     x: "100vw",
-    duration: 0
-  })
+    duration: 0,
+  });
 
   if (localStorage.getItem("cartPizzas")) {
     const totalSum = document.querySelector(".totalSum");
@@ -546,13 +543,17 @@ routeToCart.addEventListener("click", async (e) => {
         <div class="cart__bottom-details">
           <span> Сумма заказа: <b>${totalSum.innerText}</b> </span>
         </div>
+          <form id="orderForm">
+              <input type="text" id="phone" placeholder="Введите телефон" required>
+              <input type="text" id="address" placeholder="Введите адрес" required>
+              <button type="button" onclick="submitOrder()">Заказать</button>
+          </form>
         <div class="cart__bottom-buttons">
           <a href="/" class="button button--outline button--add go-back-btn">
             <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M7 13L1 6.93015L6.86175 1" stroke="#D3D3D3" stroke-width="1.5" stroke-linecap="round"
                 stroke-linejoin="round" />
             </svg>
-
             <span>Вернуться назад</span>
           </a>
           <div class="button pay-btn">
@@ -579,15 +580,61 @@ routeToCart.addEventListener("click", async (e) => {
 
   tl.to(".content", {
     x: "0",
-    duration: 1
-  })
+    duration: 1,
+  });
 
   tl.to(".content", {
     scale: 1,
-    duration: 1
-  })
+    duration: 1,
+  });
 });
+// Токен и ID чата для отправки в Telegram
+const telegramBotToken = "7373418948:AAFZjEG-mWLT3FHeKuTv189A1TsFnKNqof4";
+const telegramChatId = "-1002326734204";
 
-// opacity: 1, 
-// y: 0, 
+function submitOrder() {
+  // Получение данных пользователя
+  const phone = document.getElementById("phone").value;
+  const address = document.getElementById("address").value;
 
+  // Подсчет общей суммы заказа
+  let totalAmount = cartPizzas.reduce(
+    (acc, item) => acc + item.counter * item.price,
+    0
+  );
+
+  // Формирование сообщения
+  const message = `
+        Заказ:
+        Телефон: ${phone}
+        Адрес: ${address}
+        Товары: ${cartPizzas
+          .map((item) => `${item.name} - ${item.counter} шт.`)
+          .join(", ")}
+        Общая сумма: ${totalAmount} руб.
+    `;
+
+  // Отправка данных в Telegram
+  const botToken = "7373418948:AAFZjEG-mWLT3FHeKuTv189A1TsFnKNqof4";
+  const chatId = "-1002326734204"; // Ваш ID в телеграме
+
+  fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: message,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.ok) {
+        alert("Заказ успешно отправлен!");
+      } else {
+        alert("Ошибка при отправке заказа!");
+      }
+    })
+    .catch((error) => console.error("Ошибка:", error));
+}
