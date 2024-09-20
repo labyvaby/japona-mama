@@ -159,7 +159,6 @@ const renderCatalog = (array) => {
                   src="${pizza.imgUrl}"
                   alt="Pizza" />
               <h4 class="pizza-block__title">${pizza.name}</h4>
-
               <div class="pizza-block__bottom">
                   <div class="pizza-block__price">от ${pizza.price} сом</div>
                   <div data-id="${pizza.id}" class="button button--outline button--add">
@@ -418,6 +417,7 @@ const renderCart = () => {
 
           </div>
         </div>
+        
         <div class="cart__item-price">
           <b>${items.counter * items.price} сом</b>
         </div>
@@ -546,7 +546,8 @@ routeToCart.addEventListener("click", async (e) => {
           <form id="orderForm">
               <input type="text" id="phone" placeholder="Введите телефон" required>
               <input type="text" id="address" placeholder="Введите адрес" required>
-              <button type="button" onclick="submitOrder()">Заказать</button>
+              <input type="text" id="comment" placeholder="Коментарии к заказу" required>
+              <button type="button" onclick="submitOrder()">Оформить заказ</button>
           </form>
         <div class="cart__bottom-buttons">
           <a href="/" class="button button--outline button--add go-back-btn">
@@ -556,9 +557,7 @@ routeToCart.addEventListener("click", async (e) => {
             </svg>
             <span>Вернуться назад</span>
           </a>
-          <div class="button pay-btn">
-            <span>Оплатить сейчас</span>
-          </div>
+
         </div>
       </div>
     </div>
@@ -596,6 +595,8 @@ function submitOrder() {
   // Получение данных пользователя
   const phone = document.getElementById("phone").value;
   const address = document.getElementById("address").value;
+  const comment = document.getElementById("comment").value;
+
 
   // Подсчет общей суммы заказа
   let totalAmount = cartPizzas.reduce(
@@ -612,6 +613,7 @@ function submitOrder() {
           .map((item) => `${item.name} - ${item.counter} шт.`)
           .join(", ")}
         Общая сумма: ${totalAmount} руб.
+        коментарии: ${comment}
     `;
 
   // Отправка данных в Telegram
