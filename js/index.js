@@ -593,10 +593,15 @@ const telegramChatId = "-1002326734204";
 
 function submitOrder() {
   // Получение данных пользователя
-  const phone = document.getElementById("phone").value;
-  const address = document.getElementById("address").value;
-  const comment = document.getElementById("comment").value;
+  const phone = document.getElementById("phone").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const comment = document.getElementById("comment").value.trim();
 
+  // Проверка на заполнение всех полей
+  if (!phone || !address || !comment) {
+    alert("Заполните все поля перед отправкой.");
+    return; // Прерывание функции, если поля не заполнены
+  }
 
   // Подсчет общей суммы заказа
   let totalAmount = cartPizzas.reduce(
@@ -613,12 +618,12 @@ function submitOrder() {
           .map((item) => `${item.name} - ${item.counter} шт.`)
           .join(", ")}
         Общая сумма: ${totalAmount} руб.
-        коментарии: ${comment}
+        Комментарии: ${comment}
     `;
 
   // Отправка данных в Telegram
   const botToken = "7373418948:AAFZjEG-mWLT3FHeKuTv189A1TsFnKNqof4";
-  const chatId = "-1002326734204"; // Ваш ID в телеграме
+  const chatId = "-1002326734204"; // Ваш ID в Телеграме
 
   fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
     method: "POST",
@@ -638,5 +643,8 @@ function submitOrder() {
         alert("Ошибка при отправке заказа!");
       }
     })
-    .catch((error) => console.error("Ошибка:", error));
+    .catch((error) => {
+      console.error("Ошибка:", error);
+      alert("Произошла ошибка при отправке заказа.");
+    });
 }

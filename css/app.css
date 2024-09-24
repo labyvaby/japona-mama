@@ -770,6 +770,20 @@ button{
     flex-direction: column;
     margin-top: 24px;
 }
+
+ .header__link{
+    display: flex;
+    width: 200px;
+ }
+ .header__link img{
+    width: 100%;
+    padding: 10px 20px;
+    transition: 0.5s;
+ }
+ .header__link img:hover{
+    background: #858484;
+
+ }
 /* 
 .header .header__item {
     background-color: white;
