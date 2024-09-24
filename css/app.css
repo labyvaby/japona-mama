@@ -784,60 +784,6 @@ button{
     background: #858484;
 
  }
-/* 
-.header .header__item {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: #333;
-    cursor: pointer;
-    transition: transform 0.2s;
-    font-family: Arial, sans-serif;
-    gap: 10px;
-  }
-  .header .header__item:hover {
-    transform: scale(1.05);
-  }
-  .header .items__img {
-    width: 24px;
-    height: 24px;
-  }
-  .header .header__item::before {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 120%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: #fff;
-    padding: 15px 40px;
-    border-radius: 4px;
-    white-space: normal;
-    width: 200px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s;
-    pointer-events: none;
-    z-index: 10;
-    font-weight: 600;
-  }
-  .header .header__item:hover::before {
-    opacity: 1;
-    visibility: visible;
-  }
-    .info{
-        padding: 16px 24px;
-        margin: 10px 0;
-    }
-    .info img{
-        width: 15%;
-    } */
 @media (max-width:750px){
     .wrapper {
         width: 88%;
