@@ -142,7 +142,7 @@ const goMain = (btn) => {
     e.preventDefault();
     headerCart.style.display = "block";
     renderMain();
-  renderPrices();
+    renderPrices();
   });
 };
 
@@ -370,7 +370,7 @@ const clearCart = () => {
       </div>
     </div>
   `;
-  cartPizzas.length = 0
+  cartPizzas.length = 0;
   const goToMainBtn = document.querySelector(".button.button--black");
   goMain(goToMainBtn);
 };
@@ -544,26 +544,62 @@ routeToCart.addEventListener("click", async (e) => {
           <span> Сумма заказа: <b>${totalSum.innerText}</b> </span>
         </div>
           <form id="orderForm">
-              <input type="text" id="phone" placeholder="Введите телефон" required>
+              <input type="number" id="phone" placeholder="0700657590" required class="input-phone">
               <input type="text" id="address" placeholder="Введите адрес" required>
               <input type="text" id="comment" placeholder="Коментарии к заказу" required>
               <button type="button" onclick="submitOrder()">Оформить заказ</button>
+                  <div class="loader" id="loader" style="display: none;">
+        <div class="loader-inner line-scale">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
           </form>
         <div class="cart__bottom-buttons">
-          <a href="/" class="button button--outline button--add go-back-btn">
+        <a href="/" class="button button--outline button--add go-back-btn">
             <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7 13L1 6.93015L6.86175 1" stroke="#D3D3D3" stroke-width="1.5" stroke-linecap="round"
+            <path d="M7 13L1 6.93015L6.86175 1" stroke="#D3D3D3" stroke-width="1.5" stroke-linecap="round"
                 stroke-linejoin="round" />
-            </svg>
+                </svg>
             <span>Вернуться назад</span>
           </a>
-
+          
         </div>
       </div>
-    </div>
+      </div>
   </div>
     `;
 
+    const phoneInput = document.getElementById("phone");
+
+    phoneInput.addEventListener("input", function () {
+      let value = phoneInput.value;
+
+      // Преобразуем значение в строку для удобства работы с длиной
+      let valueStr = value.toString();
+
+      // Обрезаем строку, если она больше 10 символов
+      if (valueStr.length > 10) {
+        valueStr = valueStr.slice(0, 10);
+      }
+
+      // Устанавливаем обратно обрезанное значение
+      phoneInput.value = valueStr;
+    });
+
+    // Запрещаем вводить значения меньше или больше 10 цифр при попытке отправки формы
+    phoneInput.addEventListener("keydown", function (event) {
+      if (
+        phoneInput.value.length >= 10 &&
+        event.key !== "Backspace" &&
+        event.key !== "Delete"
+      ) {
+        event.preventDefault();
+      }
+    });
     const goBackBtn = document.querySelector(
       ".button.button--outline.button--add.go-back-btn"
     );
@@ -587,11 +623,28 @@ routeToCart.addEventListener("click", async (e) => {
     duration: 1,
   });
 });
+
 // Токен и ID чата для отправки в Telegram
 const telegramBotToken = "7373418948:AAFZjEG-mWLT3FHeKuTv189A1TsFnKNqof4";
 const telegramChatId = "-1002326734204";
 
+let IsLoading = false;
+let orderSent = false; // Флаг для отслеживания отправки заказа
+
 function submitOrder() {
+  // Проверка, был ли уже отправлен заказ
+  if (orderSent) {
+    alert("Ваш заказ уже был отправлен. Пожалуйста, подождите.");
+    return; // Прерывание функции, если заказ уже отправлен
+  }
+
+  IsLoading = true;
+  orderSent = true; // Устанавливаем флаг, что заказ отправлен
+
+  // Показать загрузчик
+  const loader = document.getElementById("loader");
+  loader.style.display = "flex"; // Показать загрузчик
+
   // Получение данных пользователя
   const phone = document.getElementById("phone").value.trim();
   const address = document.getElementById("address").value.trim();
@@ -600,6 +653,9 @@ function submitOrder() {
   // Проверка на заполнение всех полей
   if (!phone || !address || !comment) {
     alert("Заполните все поля перед отправкой.");
+    loader.style.display = "none"; // Скрыть загрузчик
+    orderSent = false; // Сбрасываем флаг
+    IsLoading = false; // Устанавливаем IsLoading в false
     return; // Прерывание функции, если поля не заполнены
   }
 
@@ -622,29 +678,32 @@ function submitOrder() {
     `;
 
   // Отправка данных в Telegram
-  const botToken = "7373418948:AAFZjEG-mWLT3FHeKuTv189A1TsFnKNqof4";
-  const chatId = "-1002326734204"; // Ваш ID в Телеграме
-
-  fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+  fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      chat_id: chatId,
+      chat_id: telegramChatId,
       text: message,
     }),
   })
     .then((response) => response.json())
     .then((data) => {
+      IsLoading = false;
+      loader.style.display = "none"; // Скрыть загрузчик после завершения
+
       if (data.ok) {
         alert("Заказ успешно отправлен!");
       } else {
         alert("Ошибка при отправке заказа!");
+        orderSent = false; // Сбрасываем флаг в случае ошибки
       }
     })
     .catch((error) => {
       console.error("Ошибка:", error);
       alert("Произошла ошибка при отправке заказа.");
+      loader.style.display = "none"; // Скрыть загрузчик при ошибке
+      orderSent = false; // Сбрасываем флаг в случае ошибки
     });
 }
