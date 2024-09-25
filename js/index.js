@@ -673,7 +673,7 @@ function submitOrder() {
         Товары: ${cartPizzas
           .map((item) => `${item.name} - ${item.counter} шт.`)
           .join(", ")}
-        Общая сумма: ${totalAmount} руб.
+        Общая сумма: ${totalAmount} сом.
         Комментарии: ${comment}
     `;
 
